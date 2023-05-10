@@ -13,11 +13,3 @@ class AppUser(AbstractUser):
     class Meta:
         verbose_name = 'AppUser'
         verbose_name_plural = 'AppUsers'
-
-
-class GuestUser(models.Model):
-    username = models.CharField(max_length=50)
-    email = models.EmailField()
-
-    def __str__(self):
-        return f'{self.username}'

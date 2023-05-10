@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from .models import AppUser, GuestUser
+from .models import AppUser
 from comment.admin import CommentsInline
 
 
@@ -22,9 +22,3 @@ class AppUserAdmin(UserAdmin):
             },
         ),
     )
-
-
-@admin.register(GuestUser)
-class GuestUserAdmin(admin.ModelAdmin):
-    list_display = ['pk', 'username']
-    inlines = [CommentsInline]
