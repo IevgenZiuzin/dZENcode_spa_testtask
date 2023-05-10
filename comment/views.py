@@ -3,9 +3,8 @@ from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Comment
-from user.models import AppUser
 from .serializers import UserCommentSerializer, GuestCommentSerializer, RateCommentSerializer
-from user.serializers import AppUserCreateSerializer
+from .service import guest_get_or_create
 
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -18,18 +17,12 @@ class CommentViewSet(viewsets.ModelViewSet):
             return UserCommentSerializer
         return GuestCommentSerializer
 
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        guest = serializer.data.get('guest')
-        if guest:
-            username = guest['username']
-            serializer = AppUserCreateSerializer()
-            AppUser.objects.create(username=username, guest=True)
-        # self.perform_create(serializer)
-        # headers = self.get_success_headers(serializer.data)
-        # return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-        return Response('some response')
+    def perform_create(self, serializer):
+        if self.request.user.is_authenticated:
+            serializer.save(user=self.request.user)
+        else:
+            guest = guest_get_or_create(serializer.validated_data)
+            serializer.save(guest=guest)
 
     @action(detail=True)
     def answers(self, request, pk=None):

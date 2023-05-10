@@ -6,7 +6,6 @@ class AppUser(AbstractUser):
     email = models.EmailField('email', unique=True, blank=False, null=False)
     home_page = models.URLField('home page', max_length=100, blank=True, null=True)
     avatar = models.ImageField(upload_to='avatars/', default=None)
-    guest = models.BooleanField('guest', default=False)
 
     def __str__(self):
         return f'{self.username}'
@@ -14,3 +13,11 @@ class AppUser(AbstractUser):
     class Meta:
         verbose_name = 'AppUser'
         verbose_name_plural = 'AppUsers'
+
+
+class GuestUser(models.Model):
+    username = models.CharField(max_length=50)
+    email = models.EmailField()
+
+    def __str__(self):
+        return f'{self.username}'

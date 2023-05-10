@@ -1,6 +1,6 @@
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers
-from .models import AppUser
+from .models import AppUser, GuestUser
 
 
 class AppUserCreateSerializer(UserCreateSerializer):
@@ -9,9 +9,9 @@ class AppUserCreateSerializer(UserCreateSerializer):
         fields = ('email', 'password', 'username', 'home_page')
 
 
-class GuestCreateSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=50)
+class GuestUserSerializer(serializers.ModelSerializer):
 
     class Meta:
+        model = GuestUser
         fields = '__all__'
 

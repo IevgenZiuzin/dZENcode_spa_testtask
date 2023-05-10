@@ -2,7 +2,7 @@ from django.contrib import admin
 from .models import Comment, Attachment
 
 
-class ChildrenCommentsInline(admin.TabularInline):
+class CommentsInline(admin.TabularInline):
     model = Comment
 
 
@@ -13,7 +13,7 @@ class AttachmentInline(admin.TabularInline):
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
     list_display = ('user', 'datetime', '__str__')
-    inlines = (ChildrenCommentsInline, AttachmentInline)
+    inlines = (CommentsInline, AttachmentInline)
 
 
 @admin.register(Attachment)

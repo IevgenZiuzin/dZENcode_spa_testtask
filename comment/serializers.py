@@ -1,22 +1,25 @@
+from collections import OrderedDict
 from rest_framework import serializers
 from .models import Comment
-from user.serializers import GuestCreateSerializer
+from user.serializers import GuestUserSerializer
 
 
 class UserCommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = '__all__'
-        read_only_fields = ('id', 'datetime', 'rate', 'rated_users')
+        fields = ['id', 'user', 'parent', 'datetime', 'content', 'rate']
+        read_only_fields = ['id', 'user', 'datetime', 'rate', 'rated_users']
+
+    def to_representation(self, instance):
+        result = super(UserCommentSerializer, self).to_representation(instance)
+        return OrderedDict([(key, result[key]) for key in result if result[key] is not None])
 
 
-class GuestCommentSerializer(serializers.ModelSerializer):
-    guest = GuestCreateSerializer()
+class GuestCommentSerializer(UserCommentSerializer):
+    guest = GuestUserSerializer()
 
-    class Meta:
-        model = Comment
-        fields = ('id', 'parent', 'content', 'datetime', 'rate', 'rated_users', 'guest')
-        read_only_fields = ('id', 'datetime', 'rate', 'rated_users')
+    class Meta(UserCommentSerializer.Meta):
+        fields = ['id', 'guest', 'parent', 'datetime', 'content', 'rate']
 
 
 class RateCommentSerializer(serializers.ModelSerializer):
