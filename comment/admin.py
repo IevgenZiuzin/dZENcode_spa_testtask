@@ -12,7 +12,7 @@ class AttachmentInline(admin.TabularInline):
 
 @admin.register(Comment)
 class CommentAdmin(admin.ModelAdmin):
-    list_display = ('user', 'datetime', '__str__')
+    list_display = ('pk', 'user', 'datetime', '__str__')
     inlines = (CommentsInline, AttachmentInline)
 
 

@@ -1,28 +1,25 @@
 from rest_framework import viewsets
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework import status
 from rest_framework.response import Response
 from .models import Comment
-from .serializers import UserCommentSerializer, GuestCommentSerializer, RateCommentSerializer
-from .service import guest_get_or_create
+from .serializers import UserCommentSerializer, RateCommentSerializer
 
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.filter(parent=None).order_by('-datetime')
+    permission_classes = [IsAuthenticated]
 
     def get_serializer_class(self):
         if self.request.user.is_authenticated:
             if self.action == 'rate':
                 return RateCommentSerializer
-            return UserCommentSerializer
-        return GuestCommentSerializer
+        return UserCommentSerializer
 
     def perform_create(self, serializer):
         if self.request.user.is_authenticated:
             serializer.save(user=self.request.user)
-        else:
-            guest = guest_get_or_create(serializer.validated_data)
-            serializer.save(guest=guest)
 
     @action(detail=True)
     def answers(self, request, pk=None):
