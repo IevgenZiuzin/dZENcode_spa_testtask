@@ -4,13 +4,14 @@ from user.models import AppUser
 
 class Comment(models.Model):
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE)
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, related_name='answers', null=True, blank=True)
     datetime = models.DateTimeField(auto_now_add=True)
     content = models.TextField()
-    rate = models.PositiveSmallIntegerField(default=0)
+    rate = models.SmallIntegerField(default=0)
+    rated_users = models.ManyToManyField(AppUser, related_name='rated_comments')
 
     def __str__(self):
-        return f'{self.content[:10]}'
+        return f'{self.content[:20]}'
 
     class Meta:
         verbose_name = 'Comment'
@@ -20,7 +21,7 @@ class Comment(models.Model):
 class Attachment(models.Model):
     comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
     file = models.FileField()
-    type = models.CharField()
+    type = models.CharField(max_length=5)
 
     def __str__(self):
         return f'{self.file}'
