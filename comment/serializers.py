@@ -3,14 +3,14 @@ from rest_framework import serializers
 from .models import Comment
 
 
-class UserCommentSerializer(serializers.ModelSerializer):
+class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = '__all__'
-        read_only_fields = ['id', 'user', 'datetime', 'rate', 'rated_users']
+        exclude = ['rated_users']
+        read_only_fields = ['id', 'user', 'datetime', 'rate']
 
     def to_representation(self, instance):
-        result = super(UserCommentSerializer, self).to_representation(instance)
+        result = super(CommentSerializer, self).to_representation(instance)
         return OrderedDict([(key, result[key]) for key in result if result[key] is not None])
 
 
