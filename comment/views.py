@@ -24,6 +24,9 @@ class CommentViewSet(viewsets.ModelViewSet):
             self.permission_classes = [IsCommentAuthorOrStaff]
         return super(CommentViewSet, self).get_permissions()
 
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
     @action(detail=True)
     def answers(self, request, pk=None):
         queryset = Comment.objects.filter(parent=pk).order_by('-datetime')
